@@ -1,0 +1,16 @@
+# fly -t target set-team -n webarchive -c webarchive.yml
+roles:
+- name: owner
+  local:
+    users:
+    - admin
+
+- name: member
+  local:
+    users:
+    - user
+
+- name: viewer
+  local:
+    users:
+    - devops

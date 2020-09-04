@@ -1,0 +1,67 @@
+---
+resources:
+- name: interval
+  type: time
+  source:
+    interval: 1h
+
+- name: concourse-mgmt
+  type: git
+  source:
+    branch: master
+    private_key: ((github_private_key))
+    uri: git@github.com:EngineerBetter/concourse-mgmt.git
+    paths:
+    - pipeline.yml
+    - tasks
+
+- name: concourse-team-configs
+  type: git
+  source:
+    branch: master
+    private_key: ((github_private_key))
+    uri: git@github.com:EngineerBetter/concourse-mgmt.git
+    paths:
+    - configs/((env))
+
+- name: task-image
+  type: docker-image
+  source:
+    password: ((dockerhub_password))
+    repository: engineerbetter/cf-ops
+    tag: latest
+    username: ((dockerhub_user))
+
+jobs:
+- name: set-pipeline
+  serial: true
+  plan:
+  - get: concourse-mgmt
+    trigger: true
+  - set_pipeline: self
+    file: concourse-mgmt/pipeline.yml
+    var_files:
+    - concourse-mgmt/vars/((env)).yml
+
+- name: set-teams
+  serial: true
+  plan:
+  - in_parallel:
+      steps:
+      - get: interval
+        trigger: true
+      - get: concourse-mgmt
+        trigger: true
+        passed:
+        - set-pipeline
+      - get: concourse-team-configs
+        trigger: true
+      - get: task-image
+  - task: set-all-teams
+    image: task-image
+    file: concourse-mgmt/tasks/set-team/task.yml
+    params:
+      ENV: ((env))
+      CONCOURSE_PASSWORD: ((admin_password))
+      CONCOURSE_URL: ((concourse_url))
+      CONCOURSE_USERNAME: ((concourse_admin_username))

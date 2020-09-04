@@ -1,0 +1,13 @@
+# fly -t target set-team -n devops -c devops.yml
+---
+roles:
+- name: owner
+  local:
+    users:
+    - admin
+
+- name: member
+  local:
+    users:
+      - devops
+
