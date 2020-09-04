@@ -25,7 +25,7 @@ resources:
     - configs/((env))
 
 - name: task-image
-  type: docker-image
+  type: registry-image
   source:
     password: ((dockerhub_password))
     repository: engineerbetter/cf-ops
