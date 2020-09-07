@@ -7,6 +7,8 @@ resources:
 
 - name: concourse-mgmt
   type: git
+  # reduce chance of hitting github rate limit
+  check_every: 5m
   source:
     branch: master
     private_key: ((github_private_key))
@@ -17,6 +19,8 @@ resources:
 
 - name: concourse-team-configs
   type: git
+  # reduce chance of hitting github rate limit
+  check_every: 5m
   source:
     branch: master
     private_key: ((github_private_key))
@@ -27,10 +31,8 @@ resources:
 - name: task-image
   type: registry-image
   source:
-    password: ((dockerhub_password))
     repository: engineerbetter/cf-ops
     tag: latest
-    username: ((dockerhub_user))
 
 jobs:
 - name: set-pipeline
