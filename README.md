@@ -61,3 +61,17 @@ This configuration will, when applied, create/update a team called `cool-apps` w
 > Note: that the example config only uses basic auth users for simplicity. The best reference I've found for adding other auth types are the `team_config_*` fixtures [in the Concourse source code](https://github.com/concourse/concourse/tree/master/fly/integration/fixtures).
 
 > Note: the main team is special in that any user with the Owner role on it has the ability to manage other teams as explained [in the docs](https://concourse-ci.org/main-team.html).
+
+After running the pipeline with the example config, `fly teams --details` shows:
+
+```sh
+name/role         users                     groups
+cool-apps/member  local:user                none
+cool-apps/owner   local:admin               none
+cool-apps/viewer  local:devops              none
+devops/member     local:devops              none
+devops/owner      local:admin               none
+main/member       local:admin,local:devops  none
+main/owner        local:admin               none
+test/owner        local:admin               none
+```
