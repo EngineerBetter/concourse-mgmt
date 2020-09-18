@@ -1,4 +1,4 @@
-# fly -t target set-team -n webarchive -c webarchive.yml
+---
 roles:
 - name: owner
   local:
